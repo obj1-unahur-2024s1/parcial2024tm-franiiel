@@ -1,4 +1,4 @@
-import materias.*
+import materiasyhechizos.*
 
 class CriaturaMagica {
 	var salud
@@ -8,6 +8,13 @@ class CriaturaMagica {
 	method aumentarSalud(cantidad){
 		salud = salud + cantidad
 	}
+	method salud() = salud
+}
+class CriaturaInmune inherits CriaturaMagica{
+	override method disminuirSalud(cantidad){
+		super(cantidad) 
+		self.aumentarSalud(cantidad)
+	}
 }
 
 class Estudiante {
@@ -16,8 +23,10 @@ class Estudiante {
 	var hechizosAprendidos = []
 	var property habilidad
 	const property esSangrePura
+	method salud() = salud
+	method casa() = casa
 	method esPeligroso(){
-		if(salud != null) casa.peligrosidad(self) else false
+		return if(salud == null) false else casa.peligrosidad(self)
 	}
 	method disminuirSalud(cantidad){
 		salud = salud - cantidad
@@ -38,11 +47,10 @@ class Estudiante {
 		hechizosAprendidos.add(hechizo)
 	}
 	method lanzarHechizo(hechizo,criatura){
-		if(hechizosAprendidos.contains(hechizo)){
-			hechizo.lanzar(criatura)
+		hechizo.lanzar(self,criatura)
 		}
-		
-	}
+	
+	method hechizosAprendidos() = hechizosAprendidos
 }
 object gryffindor{
 	method peligrosidad(estudiante) = false
