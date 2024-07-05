@@ -1,0 +1,58 @@
+import estudiantes.*
+import materiasyhechizos.*
+
+describe "Configuracion Inicial" {
+	const lechuza = new CriaturaMagica(salud = 50)
+	const centauro = new CriaturaInmune(salud = 100)
+	const inmobilus = new Hechizo(dificultad = 5)
+	const cruciatus = new HechizoImperdonable(dificultad = 8)
+	const sectumSombra = new HechizoPuro()
+	const cambire = new HechizoCambiante(dificultad = 10)
+	const harry = new Estudiante(salud = 100,habilidad = 9, esSangrePura = true,casa = gryffindor)
+	const hermione = new Estudiante(salud = 100, habilidad = 15, esSangrePura = false, casa =gryffindor)
+	const ron = new Estudiante(salud = 100, habilidad = 4, esSangrePura = true, casa =gryffindor)
+	const malfoy = new Estudiante(salud = 100, habilidad = 7, esSangrePura = true, casa =slytherin)
+	const defensaArtesOscuras = new MateriaMagica(hechizo = inmobilus,profesor = "Severus Snape")
+	method initialize(){
+		harry.aprenderHechizo(inmobilus)
+		harry.aprenderHechizo(sectumSombra)
+		harry.aprenderHechizo(cambire)
+		harry.aprenderHechizo(cruciatus)
+		hermione.aprenderHechizo(cambire)
+		ron.aprenderHechizo(inmobilus)
+		ron.aprenderHechizo(sectumSombra)
+		malfoy.aprenderHechizo(cambire)
+		defensaArtesOscuras.asistir(malfoy)
+		defensaArtesOscuras.asistir(hermione)
+		
+	}
+	test "lanzamiento Hechizo comun"{
+		harry.lanzarHechizo(inmobilus,lechuza) 
+		assert.equals(35,lechuza.salud())
+	}
+	test "Salud de la Criatura inmune"{
+		harry.lanzarHechizo(inmobilus,centauro)
+		assert.equals(100,centauro.salud())
+	}
+	test "lanzamiento HechizoImperdonable"{
+		harry.lanzarHechizo(cruciatus,malfoy)
+		assert.equals(92, harry.salud())
+	}
+	test "lanzamiento HechizoPuro"{
+		ron.lanzarHechizo(sectumSombra,malfoy)
+		assert.equals(3, ron.habilidad())	
+	}
+	test "Lanzamiento Hechizo Cambiante"{
+		malfoy.lanzarHechizo(cambire,harry)
+		assert.equals(slytherin, harry.casa())
+	}
+	test "Lanzamiento de hechizoCambiante Fallido"{
+		assert.throwsExceptionWithMessage("No puede lanzar el hechizo",{hermione.lanzarHechizo(cambire,malfoy)})
+	}
+	test "Dictado de clases materia magica Defensa Artes Oscuras"{
+		defensaArtesOscuras.dictarClase()
+		assert.that(hermione.hechizosAprendidos().contains(inmobilus))
+	}
+}
+
+
